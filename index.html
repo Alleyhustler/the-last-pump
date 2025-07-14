@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Last Pump</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+        
+        .main-content {
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .chart-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .chart-line {
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            width: 700px;
+            height: 2px;
+            background: #333;
+        }
+        
+        .pump-candle {
+            position: absolute;
+            bottom: 20px;
+            left: 350px;
+            width: 8px;
+            height: 300px;
+            background: linear-gradient(to top, #00ff88, #00cc66);
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            animation: pumpGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pumpGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.5); }
+        }
+        
+        .flatline {
+            position: absolute;
+            bottom: 320px;
+            left: 358px;
+            width: 400px;
+            height: 2px;
+            background: #444;
+            animation: drawLine 2s ease-out forwards;
+            animation-delay: 1s;
+        }
+        
+        @keyframes drawLine {
+            0% { width: 0; }
+            100% { width: 400px; }
+        }
+        
+        .tooltip {
+            position: absolute;
+            bottom: 350px;
+            left: 300px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #333;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .pump-candle:hover + .tooltip {
+            opacity: 1;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+            border-radius: 20px;
+        }
+        
+        .logo:hover {
+            opacity: 1;
+        }
+        
+        .social-links {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 10;
+        }
+        
+        .twitter-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        
+        .twitter-link:hover {
+            color: #1da1f2;
+        }
+        
+        .twitter-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .final-message {
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: right;
+            max-width: 400px;
+        }
+        
+        .final-message h1 {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        
+        .final-message p {
+            font-size: 18px;
+            font-weight: 300;
+            color: #888;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+        }
+        
+        .memorial-section {
+            min-height: 100vh;
+            padding: 100px 0;
+            background: #0f0f0f;
+            border-top: 1px solid #222;
+        }
+        
+        .memorial-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .memorial-header h2 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .memorial-header p {
+            font-size: 16px;
+            color: #666;
+            font-weight: 300;
+        }
+        
+        .memorial-wall {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2px;
+            padding: 0 40px;
+        }
+        
+        .memorial-item {
+            background: #111;
+            border: 1px solid #222;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .memorial-item:hover {
+            background: #151515;
+            border-color: #333;
+            transform: translateY(-2px);
+        }
+        
+        .memorial-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #ff4444, #ff6666);
+        }
+        
+        .memorial-item.final::before {
+            background: linear-gradient(90deg, #00ff88, #00cc66);
+        }
+        
+        .token-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .token-fate {
+            font-size: 14px;
+            color: #888;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        .final-entry {
+            grid-column: 1 / -1;
+            text-align: center;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            padding: 40px;
+            margin-top: 40px;
+        }
+        
+        .final-entry .token-name {
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: #00ff88;
+        }
+        
+        .final-entry .token-fate {
+            font-size: 16px;
+            color: #ccc;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .logo {
+                top: 20px;
+                left: 20px;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .social-links {
+                top: 20px;
+                right: 20px;
+            }
+            
+            .twitter-link {
+                font-size: 12px;
+            }
+            
+            .twitter-icon {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .chart-container {
+                width: 90vw;
+                height: 300px;
+            }
+            
+            .final-message {
+                position: static;
+                transform: none;
+                text-align: center;
+                margin-top: 60px;
+                max-width: 90vw;
+            }
+            
+            .final-message h1 {
+                font-size: 36px;
+            }
+            
+            .hero-section {
+                flex-direction: column;
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="main-content" id="mainContent">
+        <img src="Progetto senza titolo.png" alt="The Last Pump" class="logo">
+        
+        <div class="social-links">
+            <a href="https://twitter.com/TheLastPump_" target="_blank" class="twitter-link">
+                <svg class="twitter-icon" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                @TheLastPump_
+            </a>
+        </div>
+        
+        <section class="hero-section">
+            <div class="chart-container">
+                <div class="chart-grid"></div>
+                <div class="chart-line"></div>
+                <div class="pump-candle"></div>
+                <div class="tooltip">ATH. Forever.</div>
+                <div class="flatline"></div>
+            </div>
+            
+            <div class="final-message">
+                <h1>This was the final pump.</h1>
+                <p>No next coin. No next wave. Just echoes.</p>
+            </div>
+        </section>
+        
+        <section class="memorial-section">
+            <div class="memorial-header">
+                <h2>Memorial Wall</h2>
+                <p>In memory of dreams that died on-chain</p>
+            </div>
+            
+            <div class="memorial-wall">
+                <div class="memorial-item fade-in" style="animation-delay: 0.1s;">
+                    <div class="token-name">$ZOOMER</div>
+                    <div class="token-fate">rugged.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.2s;">
+                    <div class="token-name">$MILK</div>
+                    <div class="token-fate">unrecoverable.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.3s;">
+                    <div class="token-name">$PENGU</div>
+                    <div class="token-fate">dev vanished.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.4s;">
+                    <div class="token-name">$CANDY</div>
+                    <div class="token-fate">never launched.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.5s;">
+                    <div class="token-name">$MOON</div>
+                    <div class="token-fate">couldn't escape gravity.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.6s;">
+                    <div class="token-name">$DIAMOND</div>
+                    <div class="token-fate">hands weren't strong enough.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.7s;">
+                    <div class="token-name">$ROCKET</div>
+                    <div class="token-fate">exploded on launch.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.8s;">
+                    <div class="token-name">$HOPE</div>
+                    <div class="token-fate">abandoned in discord.</div>
+                </div>
+                
+                <div class="memorial-item fade-in" style="animation-delay: 0.9s;">
+                    <div class="token-name">$YOU</div>
+                    <div class="token-fate">believed too much.</div>
+                </div>
+                
+                <div class="final-entry memorial-item final fade-in" style="animation-delay: 1.0s;">
+                    <div class="token-name">$LASTPUMP</div>
+                    <div class="token-fate">died perfectly.</div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        function enterSite() {
+            const openingScene = document.getElementById('openingScene');
+            const mainContent = document.getElementById('mainContent');
+            
+            openingScene.classList.add('hidden');
+            
+            setTimeout(() => {
+                openingScene.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Trigger animations
+                setTimeout(() => {
+                    const fadeElements = document.querySelectorAll('.fade-in');
+                    fadeElements.forEach(el => {
+                        el.style.animationPlayState = 'running';
+                    });
+                }, 100);
+            }, 1000);
+        }
+        
+        // Optional: Auto-enter after 10 seconds
+        setTimeout(() => {
+            if (document.getElementById('openingScene').style.display !== 'none') {
+                enterSite();
+            }
+        }, 10000);
+        
+        // Smooth scrolling
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
